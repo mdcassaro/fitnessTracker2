@@ -7,12 +7,13 @@ const API = {
       console.log(err)
     }
     const json = await res.json();
+    console.log("Previous workout data",res)
 
     return json[json.length - 1];
   },
   async addExercise(data) {
     const id = location.search.split("=")[1];
-
+  console.log("Add exercise - put route",data)
     const res = await fetch("/api/workouts/" + id, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -25,6 +26,7 @@ const API = {
   },
   async createWorkout(data = {}) {
     data.day = Date.now();
+    console.log("Post route",data)
     const res = await fetch("/api/workouts", {
       method: "POST",
       body: JSON.stringify(data),
@@ -32,7 +34,7 @@ const API = {
     });
 
     const json = await res.json();
-
+   console.log("App - add workout",json)
     return json;
   },
 

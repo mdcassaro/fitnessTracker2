@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://usernamen:password1@ds027145.mlab.com:27145/heroku_cp6zhc44", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutdb", { useNewUrlParser: true });
 
 app.get("/api/workouts", (req, res) =>{
     db.Workout.find({})
@@ -53,9 +53,10 @@ app.get("/stats", function(req, res){
 
 app.post("/api/workouts", (req, res) =>{
     req.body.day = Date.now();
-
+    console.log("New Workout" - req.body)
     db.Workout.create(req.body)
     .then(dbWorkout => {
+        console.log("Workout added")
         res.json(dbWorkout)
     })
     .catch(err => {
@@ -64,17 +65,18 @@ app.post("/api/workouts", (req, res) =>{
 })
 
 app.put("/api/workouts/:id", (req, res) => {
-    db.Workout.update({
-        _id: req.params.id},
-        { $push: {exercises: req.body},
-         $inc: {totalDuration: req.body.duration
-        }
+    db.Workout.findByIdAndUpdate(
+         req.params.id,
+        { $push: {exercises: req.body}
+        //  $inc: {totalDuration: req.body.duration
+        // }
     }, 
     {
         new: true
     })
 
 .then(dbExercise => {
+    console.log("Update",dbExercise)
     res.json(dbExercise)
 })
 .catch (err => {
